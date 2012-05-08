@@ -1,8 +1,5 @@
 var cp = require('child_process');
 
-
-var testcases = [];
-
 var TestCase = function (name, module, method, args) {
   this.name = name;
   this.module = module;
@@ -14,7 +11,9 @@ TestCase.prototype.getName = function () {
   return this.name || this.module + "/" + this.method + "/" + this.args.join(",");
 };
 
-var startWorker = function (testcase) {
+exports.TestCase = TestCase;
+
+exports.startWorker = function (testcase) {
   var worker = cp.fork(__dirname + "/worker.js", [testcase.module, testcase.method].concat(testcase.args));
   worker.on('message', function(result) {
     console.log("Case " + testcase.name + ":");
@@ -33,11 +32,8 @@ var startWorker = function (testcase) {
   });
 };
 
-var cases = [];
-cases.push(new TestCase("leak", "./testcase.js", "leak"));
-cases.push(new TestCase("noleak", "./testcase.js", "noleak"));
-
-cases.forEach(function (testcase, index) {
-  startWorker(testcase);
-});
-
+exports.start = function (testcases) {
+  testcases.forEach(function (testcase, index) {
+    exports.startWorker(testcase);
+  });
+};

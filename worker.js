@@ -22,7 +22,7 @@ setInterval(function () {
   usage2.heapTotal += usage.heapTotal;
   usage2.heapUsed += usage.heapUsed;
   usage2.count++;
-}, 5000);
+}, 1000);
 
 setTimeout(function () {
   var avg = {
@@ -31,4 +31,5 @@ setTimeout(function () {
     heapUsed: Math.round(usage2.heapUsed / usage2.count)
   };
   process.send([usage1, avg, process.memoryUsage()]);
+  process.exit(0);
 }, 2 * 60 * 1000);
